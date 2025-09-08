@@ -1,3 +1,8 @@
+using eShop.Catalog.Extention;
+using eShop.Catalog.Types.Filtering;
+using eShop.Catalog.Types.Sorting;
+using HotChocolate.Data.Filters;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
@@ -7,11 +12,18 @@ builder.Services
 builder.Services
     .AddMigration<CatalogContext, CatalogContextSeed>();
 
+builder.Services.AddScoped<Query>();
+
 builder.Services
-    .AddGraphQLServer();
+    .AddGraphQLServer()
+    .AddQueryType<Query>()
+    .AddType<ProductFilterInputType>()
+    .AddType<ProductSortInputType>()
+    .AddGraphQLConventions();
 
 var app = builder.Build();
 
 app.MapGraphQL();
 
 app.RunWithGraphQLCommands(args);
+
