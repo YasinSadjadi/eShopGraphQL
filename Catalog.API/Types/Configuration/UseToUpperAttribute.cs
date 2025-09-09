@@ -1,6 +1,6 @@
-﻿using HotChocolate.Types.Descriptors;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using HotChocolate.Types.Descriptors;
 
 namespace eShop.Catalog.Types.Configuration;
 
@@ -10,10 +10,10 @@ public class UseToUpperAttribute : ObjectFieldDescriptorAttribute
     {
         Order = order;
     }
-    protected override void OnConfigure(IDescriptorContext context,
-        IObjectFieldDescriptor descriptor,
+    
+    protected override void OnConfigure(
+        IDescriptorContext context, 
+        IObjectFieldDescriptor descriptor, 
         MemberInfo member)
-    {
-        descriptor.UseToUpperField();
-    }
+        => descriptor.UseToUpper();
 }

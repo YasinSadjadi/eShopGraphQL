@@ -12,7 +12,8 @@ namespace eShop.Catalog.Extention
                 c => c.AddDefaults()
                 .BindRuntimeType<string, DefaultStringOperationFilterInputType>()
                 )
-                .AddSorting();
+                .AddSorting()
+                .AddPagingArguments();
             return builder;
         }
     }

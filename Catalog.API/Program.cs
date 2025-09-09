@@ -1,7 +1,5 @@
 using eShop.Catalog.Extention;
-using eShop.Catalog.Types.Filtering;
-using eShop.Catalog.Types.Sorting;
-using HotChocolate.Data.Filters;
+using eShop.Catalog.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +10,10 @@ builder.Services
 builder.Services
     .AddMigration<CatalogContext, CatalogContextSeed>();
 
-builder.Services.AddScoped<Query>();
+builder.Services
+    .AddScoped<ProductService>()
+    .AddScoped<ProductTypeService>()
+    .AddScoped<BrandService>();
 
 builder.Services
     .AddGraphQLServer()
