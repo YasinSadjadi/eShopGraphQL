@@ -1,4 +1,4 @@
-namespace eShop.Catalog.Services;
+namespace eShop.Catalog.Services.DataLoaders;
 
 internal static class ProductTypeDataLoader
 {

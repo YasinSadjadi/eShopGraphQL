@@ -1,6 +1,6 @@
-﻿using eShop.Catalog.Services;
+﻿using eShop.Catalog.Services.Services;
 
-namespace eShop.Catalog.Types;
+namespace eShop.Catalog.Types.Mutations;
 
 [MutationType]
 public static class ProductMutations

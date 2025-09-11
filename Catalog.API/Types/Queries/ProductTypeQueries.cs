@@ -1,8 +1,8 @@
-using eShop.Catalog.Services;
+using eShop.Catalog.Services.Services;
 using HotChocolate.Pagination;
 using HotChocolate.Types.Pagination;
 
-namespace eShop.Catalog.Types;
+namespace eShop.Catalog.Types.Queries;
 
 [QueryType]
 public static class ProductTypeQueries

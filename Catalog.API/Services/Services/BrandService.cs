@@ -1,6 +1,7 @@
 using HotChocolate.Pagination;
+using eShop.Catalog.Services.DataLoaders;
 
-namespace eShop.Catalog.Services;
+namespace eShop.Catalog.Services.Services;
 
 public sealed class BrandService(
     CatalogContext context, 

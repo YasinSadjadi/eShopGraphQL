@@ -1,10 +1,10 @@
 using System.Buffers;
-using eShop.Catalog.Services;
+using eShop.Catalog.Services.Services;
 using eShop.Catalog.Types.Filtering;
 using HotChocolate.Pagination;
 using HotChocolate.Types.Pagination;
 
-namespace eShop.Catalog.Types;
+namespace eShop.Catalog.Types.Queries;
 
 [QueryType]
 public static class ProductQueries
