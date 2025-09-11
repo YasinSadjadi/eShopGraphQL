@@ -23,11 +23,13 @@ internal sealed class ProductEntityTypeConfiguration : IEntityTypeConfiguration<
 
         builder
             .HasOne(ci => ci.Brand)
-            .WithMany(ci => ci.Products);
+            .WithMany(ci => ci.Products)
+            .HasForeignKey(ci => ci.BrandId);
 
         builder
             .HasOne(ci => ci.Type)
-            .WithMany(ci => ci.Products);
+            .WithMany(ci => ci.Products)
+            .HasForeignKey(ci => ci.TypeId);
 
         builder
             .HasIndex(ci => ci.Name);

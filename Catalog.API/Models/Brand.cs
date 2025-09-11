@@ -1,6 +1,6 @@
 ﻿// ReSharper disable CollectionNeverUpdated.Global
-using eShop.Catalog.Types.Configuration;
 using System.ComponentModel.DataAnnotations;
+using eShop.Catalog.Types.Configuration;
 
 namespace eShop.Catalog.Models;
 
@@ -12,5 +12,5 @@ public sealed class Brand
     [UseToUpper]
     public string Name { get; set; } = default!;
 
-    public ICollection<Product> Products { get; } = new List<Product>();
+    public ICollection<Product> Products { get; set; } = new List<Product>();
 }

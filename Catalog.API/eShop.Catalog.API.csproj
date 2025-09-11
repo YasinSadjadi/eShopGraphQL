@@ -8,6 +8,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Content Include="Properties\launchSettings.json" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Using Include="eShop.Catalog" />
 		<Using Include="eShop.Catalog.Data" />
 		<Using Include="eShop.Catalog.Models" />

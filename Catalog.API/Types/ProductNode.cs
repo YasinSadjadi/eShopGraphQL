@@ -14,13 +14,15 @@ public static partial class ProductNode
             .Ignore(t => t.RemoveStock(default));
     }
 
+    public static int InternalId([Parent] Product product) => product.Id;
+
     public static async Task<Brand?> GetBrandAsync(
         [Parent] Product product, 
         BrandService brandService, 
         CancellationToken cancellationToken)
         => await brandService.GetBrandByIdAsync(product.BrandId, cancellationToken);
     
-    public static async Task<Models.ProductType?> GetProductTypeAsync(
+    public static async Task<ProductType?> GetProductTypeAsync(
         [Parent] Product product, 
         ProductTypeService productTypeService,
         CancellationToken cancellationToken)

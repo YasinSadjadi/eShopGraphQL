@@ -1,3 +1,4 @@
+using System.Buffers;
 using eShop.Catalog.Services;
 using eShop.Catalog.Types.Filtering;
 using HotChocolate.Pagination;
@@ -16,9 +17,17 @@ public static class ProductQueries
         CancellationToken cancellationToken)
         => await productService.GetProductsAsync(where?.ToFilter(), pagingArguments, cancellationToken).ToConnectionAsync();
 
+    [NodeResolver]
     public static async Task<Product?> GetProductByIdAsync(
         int id,
         ProductService productService,
         CancellationToken cancellationToken)
         => await productService.GetProductByIdAsync(id, cancellationToken);
+}
+
+public interface INodeIdSerializer
+{
+    void Format(object id, IBufferWriter<byte> output);
+
+    object Parse(ReadOnlySpan<byte> value);
 }

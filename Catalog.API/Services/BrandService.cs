@@ -20,18 +20,21 @@ public sealed class BrandService(
     public async Task<Page<Brand>> GetBrandsAsync(
         PagingArguments args, 
         CancellationToken ct = default)
-    {
-        var page = await context.Brands
+        => await context.Brands
             .AsNoTracking()
             .OrderBy(t => t.Name)
             .ThenBy(t => t.Id)
             .ToPageAsync(args, ct);
 
-        foreach (var brand in page.Items)
+    public async Task CreateBrandAsync(Brand brand, CancellationToken ct)
+    {
+
+        if (string.IsNullOrEmpty(brand.Name))
         {
-            brandById.Set(brand.Id, brand);
+            ArgumentException.ThrowIfNullOrEmpty(brand.Name);
         }
 
-        return page;
+        context.Brands.Add(brand);
+        await context.SaveChangesAsync(ct);
     }
 }

@@ -1,5 +1,3 @@
-using ProductType = eShop.Catalog.Models.ProductType;
-
 namespace eShop.Catalog.Services;
 
 internal static class ProductTypeDataLoader

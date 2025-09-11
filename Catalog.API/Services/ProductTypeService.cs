@@ -1,5 +1,4 @@
 using HotChocolate.Pagination;
-using ProductType = eShop.Catalog.Models.ProductType;
 
 namespace eShop.Catalog.Services;
 
