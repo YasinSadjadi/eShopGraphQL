@@ -1,71 +1,114 @@
-﻿using eShop.Catalog.Services.Services;
+using eShop.Catalog.Services;
+using eShop.Catalog.Services.Errors;
+using eShop.Catalog.Services.Services;
+using eShop.Catalog.Types.Errors;
+using eShop.Catalog.Types.Inputs;
 
-namespace eShop.Catalog.Types.Mutations;
+namespace eShop.Catalog.Types;
 
 [MutationType]
 public static class ProductMutations
 {
     [Error<InvalidBrandIdErrorFactory>]
     [Error<InvalidProductTypeIdError>]
-    [Error<EntityNotFoundException>]
     [Error<ArgumentException>]
     [Error<MaxStockThresholdToSmallException>]
     public static async Task<Product> CreateProductAsync(
         CreateProductInput input,
-        ProductService service,
-        CancellationToken ct
-        )
+        ProductService productService,
+        CancellationToken cancellationToken)
     {
         var product = new Product
         {
             Name = input.Name,
             Description = input.Description,
             Price = input.Price,
-            BrandId = input.BrandId,
             TypeId = input.TypeId,
+            BrandId = input.BrandId,
             RestockThreshold = input.RestockThreshold,
             MaxStockThreshold = input.MaxStockThreshold
         };
 
-        await service.CreateProductAsync(product, ct);
-        return default!;
+        await productService.CreateProductAsync(product, cancellationToken);
+
+        return product;
     }
-}
 
-
-public class InvalidBrandIdErrorFactory : IPayloadErrorFactory<EntityNotFoundException, InvalidBrandIdError?>
-{
-    public InvalidBrandIdError? CreateErrorFrom(EntityNotFoundException exception)
+    [Error<InvalidBrandIdErrorFactory>]
+    [Error<InvalidProductTypeIdError>]
+    [Error<ArgumentException>]
+    [Error<MaxStockThresholdToSmallException>]
+    public static async Task<FieldResult<Product, InvalidProductIdError>> UpdateProductAsync(
+        UpdateProductInput input,
+        ProductService productService,
+        CancellationToken cancellationToken)
     {
-        if (exception.EntityName == nameof(Brand))
-            return new InvalidBrandIdError(exception.EntityId);
+        var product = await productService.GetProductByIdAsync(input.Id, cancellationToken);
 
-        return null;
+        if (product is null)
+        {
+            return new InvalidProductIdError(input.Id);
+        }
+
+        if (input.Name.HasValue)
+        {
+            product.Name = input.Name.Value;
+        }
+
+        if (input.Description.HasValue)
+        {
+            product.Description = input.Description.Value;
+        }
+
+        if (input.Price.HasValue)
+        {
+            product.Price = input.Price.Value;
+        }
+
+        if (input.TypeId.HasValue)
+        {
+            product.TypeId = input.TypeId.Value;
+        }
+
+        if (input.BrandId.HasValue)
+        {
+            product.BrandId = input.BrandId.Value;
+        }
+
+        if (input.RestockThreshold.HasValue)
+        {
+            product.RestockThreshold = input.RestockThreshold.Value;
+        }
+
+        if (input.MaxStockThreshold.HasValue)
+        {
+            product.MaxStockThreshold = input.MaxStockThreshold.Value;
+        }
+
+        await productService.UpdateProductAsync(product, cancellationToken);
+
+        return product;
     }
-}
 
-public record InvalidBrandIdError([property: ID<Brand>]int id)
-{
-    public string Message => "The provided brand id is invalid";
-}
-
-public record InvalidProductTypeIdError([property: ID<ProductType>] int id)
-{
-    public string Message => "The provided product type id is invalid";
-    public static InvalidProductTypeIdError? CreateErrorFrom(EntityNotFoundException exception)
+    [Error<FileExtensionNotAllowedException>]
+    public static async Task<FieldResult<Product, InvalidProductIdError>> UploadProductImageAsync(
+        [ID<Product>] int id,
+        IFile file,
+        ProductService productService,
+        ImageStorage imageStorage,
+        CancellationToken cancellationToken)
     {
-        if (exception.EntityName == nameof(ProductType))
-            return new InvalidProductTypeIdError(exception.EntityId);
+        var product = await productService.GetProductByIdAsync(id, cancellationToken);
 
-        return null;
+        if (product is null)
+        {
+            return new InvalidProductIdError(id);
+        }
+
+        await using var stream = file.OpenReadStream();
+        product.ImageFileName = await imageStorage.SaveImageAsync(file.Name, stream, cancellationToken);
+        await productService.UpdateProductAsync(product, cancellationToken);
+        
+        return product;
     }
 }
-
-public record CreateProductInput(
-    string Name,
-    string? Description,
-    decimal Price,
-    [ID<Brand>] int BrandId,
-    [ID<ProductType>] int TypeId,
-    int RestockThreshold,
-    int MaxStockThreshold);

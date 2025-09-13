@@ -10,20 +10,25 @@ public static partial class ProductNode
         descriptor
             .Ignore(t => t.BrandId)
             .Ignore(t => t.TypeId)
+            .Ignore(t => t.ImageFileName)
             .Ignore(t => t.AddStock(default))
             .Ignore(t => t.RemoveStock(default));
     }
 
+    public static Uri GetImageUrl([Parent] Product product, HttpContext httpContext)
+        => new($"http://{httpContext.Request.Host}/api/products/{product.Id}/image");
+
+
     public static int InternalId([Parent] Product product) => product.Id;
 
     public static async Task<Brand?> GetBrandAsync(
-        [Parent] Product product, 
-        BrandService brandService, 
+        [Parent] Product product,
+        BrandService brandService,
         CancellationToken cancellationToken)
         => await brandService.GetBrandByIdAsync(product.BrandId, cancellationToken);
-    
+
     public static async Task<ProductType?> GetProductTypeAsync(
-        [Parent] Product product, 
+        [Parent] Product product,
         ProductTypeService productTypeService,
         CancellationToken cancellationToken)
         => await productTypeService.GetProductTypeByIdAsync(product.BrandId, cancellationToken);

@@ -1,5 +1,6 @@
 using HotChocolate.Pagination;
-using eShop.Catalog.Services.DataLoaders;   
+using eShop.Catalog.Services.DataLoaders;
+using eShop.Catalog.Services.Errors;
 
 namespace eShop.Catalog.Services.Services;
 
@@ -72,16 +73,28 @@ public sealed class ProductService(
         context.Products.Add(product);
         await context.SaveChangesAsync(ct);
     }
-}
 
-public class EntityNotFoundException(string entityName, int entityId) : Exception
-{
-    public int EntityId { get; } = entityId;
-    public string EntityName { get; } = entityName;
-}
+    public async Task UpdateProductAsync(Product product, CancellationToken ct)
+    {
+        var oldProduct = await context.Products.FindAsync(product.Id, ct);
+        if (oldProduct is not null)
+        {
+            if (product.RestockThreshold >= product.MaxStockThreshold)
+            {
+                throw new MaxStockThresholdToSmallException(product.RestockThreshold, product.MaxStockThreshold);
+            }
 
-public class MaxStockThresholdToSmallException(int restockThresold, int maxStockThreshold) : Exception
-{
-    public int RestockThresold { get; } = restockThresold;
-    public int MaxStockThreshold { get; } = maxStockThreshold;
+            oldProduct.BrandId = product.BrandId;
+            oldProduct.Name = product.Name;
+            oldProduct.Price = product.Price;
+            oldProduct.RestockThreshold = product.RestockThreshold;
+            oldProduct.MaxStockThreshold = product.MaxStockThreshold;
+            oldProduct.Description = product.Description;
+            oldProduct.TypeId = product.TypeId;
+            oldProduct.ImageFileName = product.ImageFileName;
+
+            await context.SaveChangesAsync(ct);
+
+        }
+    }
 }

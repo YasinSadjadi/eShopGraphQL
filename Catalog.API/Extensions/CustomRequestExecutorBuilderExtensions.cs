@@ -10,6 +10,7 @@ public static class CustomRequestExecutorBuilderExtensions
         builder.AddPagingArguments();
         builder.AddGlobalObjectIdentification();
         builder.AddMutationConventions();
+        builder.AddUploadType();
         return builder;
     } 
 }

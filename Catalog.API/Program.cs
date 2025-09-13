@@ -1,3 +1,5 @@
+using eShop.Catalog.Extensions;
+using eShop.Catalog.Services;
 using eShop.Catalog.Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +14,8 @@ builder.Services
 builder.Services
     .AddScoped<ProductService>()
     .AddScoped<ProductTypeService>()
-    .AddScoped<BrandService>();
+    .AddScoped<BrandService>()
+    .AddScoped<ImageStorage>();
 
 builder.Services
     .AddGraphQLServer()
@@ -22,6 +25,8 @@ builder.Services
 var app = builder.Build();
 
 app.MapGraphQL();
+
+app.MapImageRoute();
 
 app.RunWithGraphQLCommands(args);
 
